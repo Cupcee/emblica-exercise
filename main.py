@@ -18,7 +18,12 @@ if __name__ == "__main__":
         last_session = None
         t0 = 0
         for chunk in reader:
-            sessions = [] if last_session is None else [last_session]
+
+            if last_session is not None:
+                sessions = [last_session.copy()]
+                last_session = None
+            else:
+                sessions = []
 
             for row in chunk.itertuples(index=False):
                 # handle timestamp difference
