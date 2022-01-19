@@ -20,10 +20,6 @@ def parse_args():
     parser.add_argument("--discard",
                         action="store_true",
                         help="Discard dataset after execution")
-    parser.add_argument("--chunksize",
-                        type=int,
-                        default=5000,
-                        help="Chunk size when processing JSON")
     return parser.parse_args()
 
 
