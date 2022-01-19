@@ -1,3 +1,4 @@
+import os
 from util import get_data_extract, parse_args, pp
 from constants import HEARTBEAT_DURATION, TIMEOUT_DURATION
 import pandas as pd
@@ -73,3 +74,7 @@ if __name__ == "__main__":
             # save last session of the chunk in case its not terminated
             if not sessions[-1]["session_closed"]:
                 last_session = sessions[-1]
+
+    # Discard dataset if desired
+    if args.discard:
+        os.system(f"rm {data}")

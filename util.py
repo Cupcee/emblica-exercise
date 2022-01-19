@@ -20,6 +20,9 @@ def parse_args():
                         default="events.json",
                         choices=["events.json", "dataset2.json"],
                         help="The dataset to sessionize")
+    parser.add_argument("--discard",
+                        action="store_true",
+                        help="Discard dataset after execution")
     parser.add_argument("--chunksize",
                         type=int,
                         default=5000,
