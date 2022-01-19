@@ -1,0 +1,2 @@
+- Total allocated size: 1456.0 KiB
+- Total allocated size: 6621.0 KiB
