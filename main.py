@@ -20,8 +20,7 @@ if __name__ == "__main__":
         for chunk in reader:
 
             if last_session is not None:
-                sessions = [last_session.copy()]
-                last_session = None
+                sessions = [last_session]
             else:
                 sessions = []
 
