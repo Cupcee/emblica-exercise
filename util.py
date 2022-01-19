@@ -6,10 +6,7 @@ from constants import GITHUB_PATH
 
 
 def pp(session: dict):
-    """Trim session and print it to stdout."""
-    output = session.copy()
-    del output["session_closed"]
-    print(output)
+    print(session)
 
 
 def parse_args():
