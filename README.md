@@ -1,7 +1,7 @@
 Prerequisites:
 * Python 3 
   * 3.8.12 tested
-  * likely has to be newer than ~3.4 because I import `tracemalloc` for memory usage stats
+  * likely has to be newer than ~3.4
 * `pip`
 
 To run:
