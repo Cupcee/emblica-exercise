@@ -8,6 +8,12 @@ from constants import GITHUB_PATH
 
 def pp(session: dict):
     """Prettyprint dict into json."""
+    if not all(
+            k in session for k in {
+                "user_id", "content_id", "session_start", "session_end",
+                "total_time", "track_playtime", "event_count", "ad_count"
+            }):
+        raise Exception(session)
     json_str = json.dumps(session, indent=4)
     print(json_str)
 
@@ -20,9 +26,12 @@ def parse_args():
                         default="events.json",
                         choices=["events.json", "dataset2.json"],
                         help="The dataset to sessionize")
-    parser.add_argument("--discard",
+    parser.add_argument("--debug",
                         action="store_true",
-                        help="Discard dataset after execution")
+                        help="Should print out number of sessions at end")
+    parser.add_argument("--keep_file",
+                        action="store_true",
+                        help="Keep file after execute")
     return parser.parse_args()
 
 

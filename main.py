@@ -3,14 +3,13 @@ import json
 from util import get_data_extract, parse_args, pp
 from constants import HEARTBEAT_DURATION, TIMEOUT_DURATION, ALLOWED_EVENTS
 
-# TODO: verify it works now
-counter = 0
 if __name__ == "__main__":
     args = parse_args()
     data = args.dataset
     get_data_extract(data, '.tar.gz' if data == "events.json" else ".gz")
     with open(data, 'r') as file:
         t0 = 0
+        counter = 0
         session = {}
         timeout = False
         for line in file:
@@ -23,26 +22,28 @@ if __name__ == "__main__":
 
             t1 = int(row["timestamp"])  # current time
             td = 0 if t0 == 0 else t1 - t0  # difference to previous row
-            t0 = t1
 
             # if time difference to previous event is too large we timeout
             timeout = td >= TIMEOUT_DURATION
 
-            # if in a timeout and event is not stream start, skip the iteration
-            if timeout and event != "stream_start":
-                continue
-
-            if event == "stream_start":
-                # if in a timeout and new stream starts, output previous session
-                if timeout:
-                    timeout = False
+            if timeout:
+                # previous session ends at its final timestamp
+                session["session_end"] = t0
+                if args.debug:
                     counter += 1
-                    pp(session)
+                pp(session)
 
+            # update previous to current for next iteration
+            t0 = t1
+
+            # we initialize new session either if stream_start is observed
+            # or if last session timeouts
+            if event == "stream_start" or timeout:
                 session = {
                     "user_id": row["user_id"],
                     "content_id": row["content_id"],
                     "session_start": row["timestamp"],
+                    "session_end": 0,
                     "total_time": 0,
                     "track_playtime": 0,
                     "event_count": 1,
@@ -66,14 +67,18 @@ if __name__ == "__main__":
             elif event == "stream_end":
                 session["total_time"] += td
                 session["event_count"] += 1
-                counter += 1
+                # session ends at current timestamp
+                session["session_end"] = t1
+                if args.debug:
+                    counter += 1
                 pp(session)
             else:
                 session["total_time"] += td
                 session["event_count"] += 1
 
     # Discard dataset if desired
-    if args.discard:
+    if not args.keep_file:
         os.system(f"rm {data}")
 
-print(counter)
+    if args.debug:
+        print(counter)
