@@ -1,12 +1,15 @@
 import linecache
 import os
+import json
 import argparse
 import tracemalloc
 from constants import GITHUB_PATH
 
 
 def pp(session: dict):
-    print(session)
+    """Prettyprint dict into json."""
+    json_str = json.dumps(session, indent=4)
+    print(json_str)
 
 
 def parse_args():

@@ -4,7 +4,6 @@ from util import get_data_extract, parse_args, pp
 from constants import HEARTBEAT_DURATION, TIMEOUT_DURATION, ALLOWED_EVENTS
 
 # TODO: verify it works now
-# TODO: try fetching data from url (with tarfile)
 counter = 0
 if __name__ == "__main__":
     args = parse_args()
@@ -18,6 +17,7 @@ if __name__ == "__main__":
             row = json.loads(line)
             event = row["event_type"]
 
+            # if we see unknown events, disregard them
             if event not in ALLOWED_EVENTS:
                 continue
 
@@ -25,19 +25,20 @@ if __name__ == "__main__":
             td = 0 if t0 == 0 else t1 - t0  # difference to previous row
             t0 = t1
 
-            session_timeout = td >= TIMEOUT_DURATION
+            # if time difference to previous event is too large we timeout
+            timeout = td >= TIMEOUT_DURATION
 
-            if session_timeout:
-                timeout = True
-
-            # if session has timed out, we wait for next stream start
+            # if in a timeout and event is not stream start, skip the iteration
             if timeout and event != "stream_start":
-                counter += 1
-                pp(session)
                 continue
 
             if event == "stream_start":
-                timeout = False
+                # if in a timeout and new stream starts, output previous session
+                if timeout:
+                    timeout = False
+                    counter += 1
+                    pp(session)
+
                 session = {
                     "user_id": row["user_id"],
                     "content_id": row["content_id"],
