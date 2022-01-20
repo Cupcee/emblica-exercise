@@ -3,6 +3,7 @@ Prerequisites without Docker:
   * 3.8.12 tested
   * likely has to be newer than ~3.4
 * Tested on macOS Monterey 
+* It uses `wget` to fetch the datasets from URL, so without docker you need it to run in command line
 
 To run, either:
 * run `python main.py`
