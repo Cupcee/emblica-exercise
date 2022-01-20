@@ -8,12 +8,6 @@ from constants import GITHUB_PATH
 
 def pp(session: dict):
     """Prettyprint dict into json."""
-    if not all(
-            k in session for k in {
-                "user_id", "content_id", "session_start", "session_end",
-                "total_time", "track_playtime", "event_count", "ad_count"
-            }):
-        raise Exception(session)
     json_str = json.dumps(session, indent=4)
     print(json_str)
 
